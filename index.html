@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="css/mystyles.css">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+  <script type="text/javascript">
+  	function draw(data) {
+		"use strict";
+		var margin = 75,
+			width = 1400 - margin,
+			height = 600 - margin;
+
+		d3.select("body")
+			.append("h2")
+			.text("World Cup Attendance")
+
+		var svg = d3.select("body")
+			.append("svg")
+			.attr("width", width + margin)
+			.attr("height", height + margin)
+			.append('g')
+		    .attr('class','chart');
+
+		/*
+		Dimple.js Chart construction code
+		*/
+
+
+		debugger;
+		var myChart = new dimple.chart(svg, data);
+		var x = myChart.addTimeAxis("x", "Date"); 
+		myChart.addMeasureAxis("y", "Flights");
+		/*x.dateParseFormat = "%Y";*/
+		x.tickFormat = "%m/%Y";
+		/*x.timeInterval = 4;*/
+		myChart.addSeries("UniqueCarrier", dimple.plot.line);
+		myChart.addSeries("UniqueCarrier", dimple.plot.scatter);
+		myChart.draw();
+    };
+  </script>
+</head>
+<body>
+  <script type="text/javascript">
+
+  	format = d3.time.format("%m/%d/%Y");
+
+	d3.csv("data/summarizedFlightData.csv", function(d) {
+		d['Date'] = format.parse(d['Date']);
+		d['Flights'] = +d['Flights'];
+      return d;
+  		}, draw);
+  </script>
+</body>
+</html>
+
+</html>

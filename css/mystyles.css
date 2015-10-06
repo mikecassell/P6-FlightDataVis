@@ -1,0 +1,17 @@
+body {
+    background-color: lightBlue;
+}
+
+.state {
+
+}
+
+
+.path {
+	stroke: black;
+	stroke-width: 1;
+}
+
+.stateLabel {
+	font-size: x-small;
+}
