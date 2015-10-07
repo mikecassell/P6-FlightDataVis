@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="css/mystyles.css">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script type="text/javascript">
+  	function draw(data) {
+		"use strict";
+		var margin = 75,
+			width = 1600 - margin,
+			height = 800 - margin;
+
+		var colorScale = d3.scale.linear()
+		    .domain([.12, .241])
+		    .range(["green", "red"]);
+
+		var svg = d3.select("body")
+			.append("svg")
+			.attr("width", width - margin)
+			.attr("height", height - margin)
+			.append('g')
+			.attr('class', 'map');
+		var projection = d3.geo.mercator()
+							.scale(1200)
+							.translate([width+1200, height + 465]);
+							
+		var path = d3.geo.path().projection(projection, renderMap);
+		
+		function renderMap(stateData) {
+			var map = svg.selectAll('path')
+				.data(stateData.features)
+				.enter()
+				.append('path')
+				.attr('d', path)
+				.style('fill', 'lightBlue')
+				.style('stroke', 'black')
+				.style('stroke-width', 0.5)
+			plot_points(data);
+		};
+		
+		
+		function plot_points(data) {
+            //draw circles logic
+            
+            function agg_ports(leaves) {
+                var total = d3.sum(leaves, function(d) {
+                    return d['FlightCount'];
+                });
+
+                var lateFlights = d3.sum(leaves, function(d) {
+                	return d['DelFlights']
+                }) 
+
+                var coords = leaves.map(function(d) {
+                    return projection([+d.LongOrigin, +d.LatOrigin]);
+                });
+
+                var center_x = d3.mean(coords, function(d) {
+                    return d[0];
+                });
+
+                var center_y = d3.mean(coords, function(d) {
+                    return d[1];
+                });
+
+                return {
+                  'Flights' : total,
+                  'Late' : lateFlights,
+                  'LateRate' : ((lateFlights / total ) * 100).toFixed(1) + "%",
+                  'x' : center_x,
+                  'y' : center_y
+                };
+            }
+			
+            var nested = d3.nest()
+                           .key(function(d) {
+                            	return d['AirportNameOrigin'];
+                           })
+                           .rollup(agg_ports)
+                           .entries(data);
+			
+            svg.append('g')
+               .attr("class", "bubble")
+               .selectAll("circle")
+               .data(nested)
+               .enter()
+               .append("circle")
+               .text("test")
+               .attr('cx', function(d) { return d.values['x']; })
+               .attr('cy', function(d) { return d.values['y']; })
+               .attr('fill', function(d) { return colorScale(+d.values.Late / d.values.Flights) })
+               .attr('r', function(d) {
+               		debugger;
+                    return 10;
+               })
+               .on("mouseover", function(d) {      
+				div.transition()        
+					.duration(200)      
+					.style("opacity", .99);      
+				div .html(d.key + "<br /> Total Departing Flights:" + d.values.Flights + "<br/>Delayed Rate:"+ d.values.LateRate) 
+					.style("left", (d3.event.pageX - 20) + "px")     
+				    .style("top", (d3.event.pageY - 20) + "px")
+				    .style("height", "50px")
+				    .style("width", "240px");   
+            	})                  
+				.on("mouseout", function(d) {       
+					div.transition()        
+						.duration(500)      
+    					.style("opacity", 0);   
+        		});
+        }
+        d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
+
+        
+
+	};
+  </script>
+</head>
+<body>
+  <script type="text/javascript">
+  	var div = d3.select("body").append("div")   
+	    .attr("class", "tooltip")
+	    .style("opacity", 0);
+
+  	format = d3.time.format("%m/%d/%Y");
+
+	d3.csv("data/flightData.csv", function(d) {
+		d['FlightCount'] = +d['FlightCount'];
+		d['DelFlights'] = +d['DelFlights'];
+		d['DepDelay'] = +d['DepDelay'];
+		d['LatOrigin'] = +d['LatOrigin'];
+		d['LongOrigin'] = +d['LongOrigin'];
+      	return d;
+	}, draw);
+  </script>
+</body>
+</html>
+
+</html>
