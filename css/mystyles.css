@@ -1,5 +1,5 @@
 body {
-    background-color: lightBlue;
+    background-color: white;
 }
 
 .state {
@@ -14,4 +14,8 @@ body {
 
 .stateLabel {
 	font-size: x-small;
+}
+
+.axis {
+	stroke-width: 1;
 }

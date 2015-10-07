@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="css/mystyles.css">
   <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
   <script type="text/javascript">
   	function draw(data) {
 		"use strict";
@@ -12,10 +11,51 @@
 			width = 1400 - margin,
 			height = 600 - margin;
 
-		d3.select("body")
-			.append("h2")
-			.text("World Cup Attendance")
+		// Path drawing function
+		var lineGen = d3.svg.line()
+	        .x(function(d) {
+	            return date_scale(d.Date);
+	        })
+	        .y(function(d) {
+	            return del_scale(d.DepDelay);
+	        })
+	        .interpolate("basis");
 
+
+		// Find range of date column
+		var date_extent = d3.extent(data, function(d) {
+			return d['Date'];
+		});
+
+		// Find range of attendance column
+		var del_extent = d3.extent(data, function(d) {
+			return d['DepDelay'];
+		})
+		
+		// Create x-axis scale mapping dates -> pixels
+		var date_scale = d3.time.scale()
+			.range([margin, width])
+			.domain(date_extent);
+
+		// Create y-axis scale mapping attendance -> pixels
+		var del_scale = d3.scale.linear()
+			.range([height, margin])
+			.domain(del_extent);
+
+		// Add our axis
+		var date_axis = d3.svg.axis()
+			.scale(date_scale)
+			.ticks(d3.time.months, 3);
+
+		var count_axis = d3.svg.axis()
+			.scale(del_scale)
+			.orient("left");
+	
+        d3.select("body")
+			.append("h1")
+			.text("How Late is Your Flight?")
+
+		// Create the SVG element
 		var svg = d3.select("body")
 			.append("svg")
 			.attr("width", width + margin)
@@ -23,21 +63,48 @@
 			.append('g')
 		    .attr('class','chart');
 
-		/*
-		Dimple.js Chart construction code
-		*/
+		// Add the Axis to the SVG
+		d3.select("svg")
+            .append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .text("test")
+            .call(date_axis);
 
+        d3.select("svg")
+            .append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + margin + ",0)")
+            .call(count_axis);
+		
+		// Add the carrier lines
+		var groups = d3.nest()
+			.key( function (d) {
+				return d.UniqueCarrier;
+			})
+			.entries(data);
 
-		debugger;
-		var myChart = new dimple.chart(svg, data);
-		var x = myChart.addTimeAxis("x", "Date"); 
-		myChart.addMeasureAxis("y", "Flights");
-		/*x.dateParseFormat = "%Y";*/
-		x.tickFormat = "%m/%Y";
-		/*x.timeInterval = 4;*/
-		myChart.addSeries("UniqueCarrier", dimple.plot.line);
-		myChart.addSeries("UniqueCarrier", dimple.plot.scatter);
-		myChart.draw();
+		groups.forEach(function(d, i) {
+			var carrier = "Carrier: " + d.key;
+			debugger;
+		    svg.append('svg:path')
+		        .attr('d', lineGen(d.values))
+		        .attr('stroke', '#D4CCC5')
+		        .attr('stroke-width', 1)
+		        .attr('fill', 'none')
+				.on("mouseover", function(d) { // Add events for highlighting and cancelling selected
+					d3.select(this).attr('stroke-width', 3).style("stroke", "#867970");
+				})                  
+				.on("mouseout", function(d) {
+					d3.select(this).attr('stroke-width', 1).style("stroke", "#D4CCC5");
+				})
+				.append("svg:title")
+				.text( function(d) { 
+					return carrier; 
+				});
+		});
+		
+
     };
   </script>
 </head>
@@ -49,6 +116,8 @@
 	d3.csv("data/summarizedFlightData.csv", function(d) {
 		d['Date'] = format.parse(d['Date']);
 		d['Flights'] = +d['Flights'];
+		d['Cancelled'] = +d['Cancelled'];
+		d['DepDelay'] = +d['DepDelay'];
       return d;
   		}, draw);
   </script>
