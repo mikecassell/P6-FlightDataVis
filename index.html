@@ -21,7 +21,6 @@
 	        })
 	        .interpolate("basis");
 
-
 		// Find range of date column
 		var date_extent = d3.extent(data, function(d) {
 			return d['Date'];
@@ -51,6 +50,7 @@
 			.scale(del_scale)
 			.orient("left");
 	
+		// Title
         d3.select("body")
 			.append("h1")
 			.text("How Late is Your Flight?")
@@ -85,27 +85,40 @@
 			.entries(data);
 
 		groups.forEach(function(d, i) {
-			var carrier = "Carrier: " + d.key;
-			debugger;
+			var pre = "";
+			if (d.key != "MEAN")
+			{
+				pre = "Carrier: ";
+			}
+			var carrier = pre + d.key;
+			var strk = 0;
+			if(d.key == "MEAN") {
+				strk = 3;
+            } else {
+				strk = 1;
+		    };
 		    svg.append('svg:path')
+		    	.attr("class","line " + d.key)
 		        .attr('d', lineGen(d.values))
 		        .attr('stroke', '#D4CCC5')
-		        .attr('stroke-width', 1)
+		        .attr('stroke-width', strk)
 		        .attr('fill', 'none')
 				.on("mouseover", function(d) { // Add events for highlighting and cancelling selected
-					d3.select(this).attr('stroke-width', 3).style("stroke", "#867970");
+					if(!this.classList.contains("MEAN")) { 
+						d3.select(this).attr('stroke-width', 3).style("stroke", "#867970")
+					};
 				})                  
 				.on("mouseout", function(d) {
-					d3.select(this).attr('stroke-width', 1).style("stroke", "#D4CCC5");
+					if(!this.classList.contains("MEAN")) { 
+						d3.select(this).attr('stroke-width', 1).style("stroke", "#D4CCC5")
+					};
 				})
 				.append("svg:title")
 				.text( function(d) { 
 					return carrier; 
 				});
 		});
-		
-
-    };
+	};
   </script>
 </head>
 <body>
