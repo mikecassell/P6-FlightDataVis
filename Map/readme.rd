@@ -26,3 +26,6 @@ http://stackoverflow.com/questions/14492284/center-a-map-in-d3-given-a-geojson-o
 
 Adding Map Attributes:
 http://stackoverflow.com/questions/13897534/add-names-of-the-states-to-a-map-in-d3-js
+
+Implimenting a D3 Ordinal Scale for Colors:
+http://synthesis.sbecker.net/articles/2012/07/16/learning-d3-part-6-scales-colors

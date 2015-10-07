@@ -72,14 +72,23 @@
                   'y' : center_y
                 };
             }
-			
+
             var nested = d3.nest()
                            .key(function(d) {
                             	return d['AirportNameOrigin'];
                            })
                            .rollup(agg_ports)
                            .entries(data);
-			
+
+			var maxFlights  = d3.max(nested, function(d) {
+                return d.values['Flights'];
+            });
+
+			var flghtRad = d3.scale.sqrt()
+                           .domain([0, maxFlights])
+                           .range([0, 10]);
+			debugger;
+
             svg.append('g')
                .attr("class", "bubble")
                .selectAll("circle")
@@ -91,8 +100,7 @@
                .attr('cy', function(d) { return d.values['y']; })
                .attr('fill', function(d) { return colorScale(+d.values.Late / d.values.Flights) })
                .attr('r', function(d) {
-               		debugger;
-                    return 10;
+                    return flghtRad(d.values.Flights);
                })
                .on("mouseover", function(d) {      
 				div.transition()        
