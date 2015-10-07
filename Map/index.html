@@ -6,6 +6,7 @@
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script type="text/javascript">
   	function draw(data) {
+  		// Initial setup
 		"use strict";
 		var margin = 75,
 			width = 1600 - margin,
@@ -27,6 +28,7 @@
 							
 		var path = d3.geo.path().projection(projection, renderMap);
 		
+		// Map rendering
 		function renderMap(stateData) {
 			var map = svg.selectAll('path')
 				.data(stateData.features)
@@ -40,9 +42,8 @@
 		};
 		
 		
+		// Point plotting 
 		function plot_points(data) {
-            //draw circles logic
-            
             function agg_ports(leaves) {
                 var total = d3.sum(leaves, function(d) {
                     return d['FlightCount'];
@@ -72,7 +73,7 @@
                   'y' : center_y
                 };
             }
-
+            // Create our nested data structure
             var nested = d3.nest()
                            .key(function(d) {
                             	return d['AirportNameOrigin'];
@@ -80,6 +81,7 @@
                            .rollup(agg_ports)
                            .entries(data);
 
+            // Set up scaling for bubble sizes by getting the max and then creating a scale
 			var maxFlights  = d3.max(nested, function(d) {
                 return d.values['Flights'];
             });
@@ -87,8 +89,8 @@
 			var flghtRad = d3.scale.sqrt()
                            .domain([0, maxFlights])
                            .range([0, 10]);
-			debugger;
 
+            // Create the bubbles at the airports
             svg.append('g')
                .attr("class", "bubble")
                .selectAll("circle")
@@ -106,7 +108,9 @@
 				div.transition()        
 					.duration(200)      
 					.style("opacity", .99);      
-				div .html(d.key + "<br /> Total Departing Flights:" + d.values.Flights + "<br/>Delayed Rate:"+ d.values.LateRate) 
+				div.html("<b>" + d.key + "</b>" + 
+						"<br />Total Departing Flights: " + d.values.Flights  +
+						"<br/>Delayed Rate: "+ d.values.LateRate) 
 					.style("left", (d3.event.pageX - 20) + "px")     
 				    .style("top", (d3.event.pageY - 20) + "px")
 				    .style("height", "50px")
@@ -118,10 +122,8 @@
     					.style("opacity", 0);   
         		});
         }
+
         d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
-
-        
-
 	};
   </script>
 </head>
