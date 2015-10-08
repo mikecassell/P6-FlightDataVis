@@ -1,3 +1,12 @@
+Feedback:
+Eamonn:
+As for your project there, flight data is right up my alley, I deal with it often in various projects.
+
+As for the visualization itself, why is it only the continental US as opposed to the entire US or even the world? Perhaps it’s just me, but why is the map so bland? Why use that particular map and not something like google maps where it is either more colourful or more detailed?
+
+As for the data, no questions really on that, I understand the data.  I do like the fact that the colour of the circles changes to red and gets bigger with the larger averages, that’s a nice touch. Does the lines have a similar meaning?  Also, why just these airports, there are over 10,000 airports in the United States?
+
+
 References:
 
 Data Sources:
