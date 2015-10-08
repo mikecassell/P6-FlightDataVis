@@ -41,13 +41,77 @@
 			plot_points(data);
 		};
 		
-		
+		function plot_lines(data) {
+			function aggRoutes(leaves) {
+				var totalFlights = d3.sum(leaves, function(d) {
+					return d["FlightCount"];
+				});
+
+				var arrDel = d3.sum(leaves, function(d) {
+					return d["ArrDelay"];
+				});
+
+				var coords1 = leaves.map(function(d) {
+					return projection([+d.LongOrigin, +d.LatOrigin])
+				});
+
+				var coords2 = leaves.map(function(d) {
+					return projection([+d.LongDest, +d.LatDest])
+				});
+
+				var center_x1 = d3.mean(coords1, function(d) {
+                    return d[0];
+                });
+
+                var center_y1 = d3.mean(coords1, function(d) {
+                    return d[1];
+                });
+                var center_x2 = d3.mean(coords2, function(d) {
+                    return d[0];
+                });
+
+                var center_y2 = d3.mean(coords2, function(d) {
+                    return d[1];
+                });
+                return {
+                  'meanDelay' : +arrDel / +totalFlights,
+                  'x1' : center_x1,
+                  'y1' : center_y1,
+                  'x2' : center_x2,
+                  'y2' : center_y2
+                };
+			}
+
+			var lineNest = d3.nest()
+                				.key(function(d) { 
+                					return d.Origin;
+                				})
+                				.rollup(aggRoutes)
+                				.entries(data);
+
+       		svg.append('g').selectAll("line")
+			    .data(lineNest)
+			    .enter().append("line")
+            	.attr("class", "line")
+            	.style("stroke", "black")  // colour the line
+			    .attr("x1", function(d) {return d.values['x1'];} )
+			    .attr("y1", function(d) {return d.values['y1'];} )
+			    .attr("x2", function(d) {return d.values['x2'];} )
+			    .attr("y2", function(d) {return d.values['y2'];} )
+			    .attr("stroke", 2);
+                 // y position of the second end of the line
+		}
+
 		// Point plotting 
 		function plot_points(data) {
             function agg_ports(leaves) {
                 var total = d3.sum(leaves, function(d) {
                     return d['FlightCount'];
                 });
+
+				var totalDelay = d3.sum(leaves, function(d) {
+                	return d['DepDelay']
+                }) 
 
                 var lateFlights = d3.sum(leaves, function(d) {
                 	return d['DelFlights']
@@ -69,10 +133,13 @@
                   'Flights' : total,
                   'Late' : lateFlights,
                   'LateRate' : ((lateFlights / total ) * 100).toFixed(1) + "%",
+                  'AvgDepDelay' : (totalDelay / total).toFixed(0) + " min",
                   'x' : center_x,
                   'y' : center_y
                 };
             }
+
+        	
             // Create our nested data structure
             var nested = d3.nest()
                            .key(function(d) {
@@ -110,21 +177,29 @@
 					.style("opacity", .99);      
 				div.html("<b>" + d.key + "</b>" + 
 						"<br />Total Departing Flights: " + d.values.Flights  +
-						"<br/>Delayed Rate: "+ d.values.LateRate) 
+						"<br/>Delayed Departure Rate: " + d.values.LateRate + 
+						"<br/>Avg. Departing Delay: " + d.values.AvgDepDelay) 
 					.style("left", (d3.event.pageX - 20) + "px")     
-				    .style("top", (d3.event.pageY - 20) + "px")
-				    .style("height", "50px")
-				    .style("width", "240px");   
+				    .style("top", (d3.event.pageY - 20) + "px");
             	})                  
 				.on("mouseout", function(d) {       
 					div.transition()        
 						.duration(500)      
     					.style("opacity", 0);   
+        		})
+        		.on("click", function(d) {
+        			testMe(d.key);
         		});
-        }
-
+        	plot_lines(data);
+        	}
+				
         d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
 	};
+  </script>
+  <script type="text/javascript">
+  	function testMe(d) {
+  		alert("testing" + d);
+  	}
   </script>
 </head>
 <body>
