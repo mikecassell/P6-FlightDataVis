@@ -16,6 +16,10 @@
 		    .domain([.12, .241])
 		    .range(["green", "red"]);
 
+		var colorMinScale = d3.scale.linear()
+		    .domain([0, 20, 30])
+		    .range(["green", "orange", "red"]);
+
 		var svg = d3.select("body")
 			.append("svg")
 			.attr("width", width - margin)
@@ -35,7 +39,7 @@
 				.enter()
 				.append('path')
 				.attr('d', path)
-				.style('fill', 'lightBlue')
+				.style('fill', 'white')
 				.style('stroke', 'black')
 				.style('stroke-width', 0.5)
 			plot_points(data);
@@ -86,20 +90,29 @@
                 				.key(function(d) { 
                 					return d.Origin;
                 				})
+                				.key(function(d) {
+                					return d.Dest;
+                				})
                 				.rollup(aggRoutes)
                 				.entries(data);
 
-       		svg.append('g').selectAll("line")
-			    .data(lineNest)
-			    .enter().append("line")
-            	.attr("class", "line")
-            	.style("stroke", "black")  // colour the line
-			    .attr("x1", function(d) {return d.values['x1'];} )
-			    .attr("y1", function(d) {return d.values['y1'];} )
-			    .attr("x2", function(d) {return d.values['x2'];} )
-			    .attr("y2", function(d) {return d.values['y2'];} )
-			    .attr("stroke", 2);
-                 // y position of the second end of the line
+	        lineNest.forEach(function(source) {
+	        	svg.append('g').selectAll("line")
+				    .data(source.values)
+				    .enter().append("line")
+	            	.attr("class", "line src-" + source.key)
+	            	.style("stroke", function(d) {
+	            		return colorMinScale(d.values['meanDelay']);
+	            	})  
+				    .attr("x1", function(d) {
+				    	return d.values['x1'];} )
+				    .attr("y1", function(d) {return d.values['y1'];} )
+				    .attr("x2", function(d) {return d.values['x2'];} )
+				    .attr("y2", function(d) {return d.values['y2'];} )
+				    .style("visibility","hidden")
+				    .attr("stroke", 3);
+
+	        	});
 		}
 
 		// Point plotting 
@@ -107,6 +120,10 @@
             function agg_ports(leaves) {
                 var total = d3.sum(leaves, function(d) {
                     return d['FlightCount'];
+                });
+
+                var airPortCode = d3.max(leaves, function(d) {
+                    return d['Origin'];
                 });
 
 				var totalDelay = d3.sum(leaves, function(d) {
@@ -131,6 +148,7 @@
 
                 return {
                   'Flights' : total,
+                  'airPortCode': airPortCode,
                   'Late' : lateFlights,
                   'LateRate' : ((lateFlights / total ) * 100).toFixed(1) + "%",
                   'AvgDepDelay' : (totalDelay / total).toFixed(0) + " min",
@@ -164,7 +182,7 @@
                .data(nested)
                .enter()
                .append("circle")
-               .text("test")
+               .text(function(d) { return d.key;})
                .attr('cx', function(d) { return d.values['x']; })
                .attr('cy', function(d) { return d.values['y']; })
                .attr('fill', function(d) { return colorScale(+d.values.Late / d.values.Flights) })
@@ -176,11 +194,11 @@
 					.duration(200)      
 					.style("opacity", .99);      
 				div.html("<b>" + d.key + "</b>" + 
-						"<br />Total Departing Flights: " + d.values.Flights  +
+						"<br/>Total Departing Flights: " + d.values.Flights  +
 						"<br/>Delayed Departure Rate: " + d.values.LateRate + 
 						"<br/>Avg. Departing Delay: " + d.values.AvgDepDelay) 
-					.style("left", (d3.event.pageX - 20) + "px")     
-				    .style("top", (d3.event.pageY - 20) + "px");
+					.style("left", (d3.event.pageX + 20) + "px")     
+				    .style("top", (d3.event.pageY - 10) + "px");
             	})                  
 				.on("mouseout", function(d) {       
 					div.transition()        
@@ -188,17 +206,25 @@
     					.style("opacity", 0);   
         		})
         		.on("click", function(d) {
-        			testMe(d.key);
+        			d3.selectAll("line").transition().style("visibility","hidden");
+        			var relevant = svg.selectAll(".src-" + d.values.airPortCode);
+        			relevant.transition()
+        				.style("visibility","visible");
+        			testMe(d.values.airPortCode);
         		});
         	plot_lines(data);
         	}
 				
         d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
+
+       
 	};
   </script>
   <script type="text/javascript">
   	function testMe(d) {
-  		alert("testing" + d);
+  		// placeholder
+
+
   	}
   </script>
 </head>
@@ -219,6 +245,19 @@
       	return d;
 	}, draw);
   </script>
+  <h1>Flight Delay Information for 2008</h1>
+  <h2>Flight delay times for the top 20 US airports by volume of flights in 2008</h2>
+  
+  This information was compiled by TODO:Name and represents all the air traffic between the 20 bussiest US airports for domestic flights in 2008 (the last year data was available for.) The size of each airports circle represents its departing volume for the year (proportionally) and the color is shaded from green to red representing the mean departure delay for a flight from that airport. Hovering over an airport will provide a quick summary of departure information (delays and flight volume). Lastly clicking will provide additional route data documenting the arrival delays to the other airports from the one clicked (so you can compare the depature delays in the circles vs. the arrival delays in the routes to see where the bottlenecks are).
+<br />
+<br />
+  If you could take a few minutes to provide me feedback on the below points (or anything else that stands out), I would be very grateful for it (I need feedback to finish my course!)
+    <li>What do you notice in the visualization?</li>
+    <li>What questions do you have about the data?</li>
+    <li>What relationships do you notice?</li>
+    <li>What do you think is the main takeaway from this visualization?</li>
+    <li>Is there something you don’t understand in the graphic?</li>
+  <br />
 </body>
 </html>
 

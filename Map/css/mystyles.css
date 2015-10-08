@@ -2,8 +2,8 @@ body {
     background-color: white;
 }
 
-.state {
-
+.path {
+	fill: white;
 }
 
 div.tooltip {   
