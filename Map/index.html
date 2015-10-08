@@ -79,6 +79,7 @@
                 });
                 return {
                   'meanDelay' : +arrDel / +totalFlights,
+                  'totalFlights' : totalFlights,
                   'x1' : center_x1,
                   'y1' : center_y1,
                   'x2' : center_x2,
@@ -110,6 +111,17 @@
 				    .attr("x2", function(d) {return d.values['x2'];} )
 				    .attr("y2", function(d) {return d.values['y2'];} )
 				    .style("visibility","hidden")
+            .on("mouseover", function(d) {
+                debugger;
+                div.transition()        
+                    .duration(200)      
+                    .style("opacity", .95);      
+                div.html("<b>Flights to " + d.key + "</b>" + 
+                    "<br/>Total Flights: " + d.values.totalFlights  +
+                    "<br/>Avg. Arrival Delay: " + (d.values.meanDelay).toFixed(0) + " minutes." )
+                  .style("left", (d3.event.pageX + 20) + "px")     
+                    .style("top", (d3.event.pageY - 10) + "px");
+            })
 				    .attr("stroke", 3);
 
 	        	});
@@ -190,29 +202,29 @@
                     return flghtRad(d.values.Flights);
                })
                .on("mouseover", function(d) {      
-				div.transition()        
-					.duration(200)      
-					.style("opacity", .99);      
-				div.html("<b>" + d.key + "</b>" + 
-						"<br/>Total Departing Flights: " + d.values.Flights  +
-						"<br/>Delayed Departure Rate: " + d.values.LateRate + 
-						"<br/>Avg. Departing Delay: " + d.values.AvgDepDelay) 
-					.style("left", (d3.event.pageX + 20) + "px")     
-				    .style("top", (d3.event.pageY - 10) + "px");
-            	})                  
-				.on("mouseout", function(d) {       
-					div.transition()        
-						.duration(500)      
-    					.style("opacity", 0);   
-        		})
-        		.on("click", function(d) {
-        			d3.selectAll("line").transition().style("visibility","hidden");
-        			var relevant = svg.selectAll(".src-" + d.values.airPortCode);
-        			relevant.transition()
-        				.style("visibility","visible");
-        			testMe(d.values.airPortCode);
-        		});
-        	plot_lines(data);
+          				div.transition()        
+          					.duration(200)      
+          					.style("opacity", .95);      
+          				div.html("<b>" + d.key + "</b>" + 
+          						"<br/>Total Departing Flights: " + d.values.Flights  +
+          						"<br/>Delayed Departure Rate: " + d.values.LateRate + 
+          						"<br/>Avg. Departing Delay: " + d.values.AvgDepDelay) 
+          					.style("left", (d3.event.pageX + 20) + "px")     
+          				    .style("top", (d3.event.pageY - 10) + "px");
+                      	})                  
+      				.on("mouseout", function(d) {       
+        					div.transition()        
+        						.duration(500)      
+            					.style("opacity", 0);   
+                		})
+          		.on("click", function(d) {
+          			d3.selectAll("line").transition().style("visibility","hidden");
+          			var relevant = svg.selectAll(".src-" + d.values.airPortCode);
+          			relevant.transition()
+          				.style("visibility","visible");
+          			testMe(d.values.airPortCode);
+          		});
+              	plot_lines(data);
         	}
 				
         d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
