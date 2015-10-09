@@ -6,6 +6,10 @@ body {
 	fill: white;
 }
 
+.route {
+  fill-opacity: 0;
+}
+
 div.tooltip {   
   position: absolute;           
   text-align: center;           
@@ -21,7 +25,7 @@ div.tooltip {
 
 .path {
 	stroke: black;
-	stroke-width: 1;
+	
 }
 
 .stateLabel {

@@ -20,6 +20,10 @@
 		    .domain([0, 20, 30])
 		    .range(["green", "orange", "red"]);
 
+    var busyScale = d3.scale.linear()
+        .domain([500,5000])
+        .range([2,10]);
+
 		var svg = d3.select("body")
 			.append("svg")
 			.attr("width", width - margin)
@@ -79,7 +83,7 @@
                 });
                 return {
                   'meanDelay' : +arrDel / +totalFlights,
-                  'totalFlights' : totalFlights,
+                  'totalFlights' : +totalFlights,
                   'x1' : center_x1,
                   'y1' : center_y1,
                   'x2' : center_x2,
@@ -98,21 +102,24 @@
                 				.entries(data);
 
 	        lineNest.forEach(function(source) {
-	        	svg.append('g').selectAll("line")
+	        	svg.append('g').selectAll("path")
 				    .data(source.values)
-				    .enter().append("line")
-	            	.attr("class", "line src-" + source.key)
+				    .enter().append("path")
+	            	.attr("class", "path route src-" + source.key)
 	            	.style("stroke", function(d) {
 	            		return colorMinScale(d.values['meanDelay']);
 	            	})  
-				    .attr("x1", function(d) {
-				    	return d.values['x1'];} )
-				    .attr("y1", function(d) {return d.values['y1'];} )
-				    .attr("x2", function(d) {return d.values['x2'];} )
-				    .attr("y2", function(d) {return d.values['y2'];} )
+                .attr("d", function(d) {
+                var dx = d.values['x2'] - d.values['x1'],
+                    dy = d.values['y2']- d.values['y1'],
+                    dr = Math.sqrt(dx * dx + dy * dy) * 2.5;
+                return "M" + d.values['x1'] + "," + d.values['y1'] + "A" + dr + "," + dr + " 0 0,1 " + d.values['x2'] + "," + d.values['y2'];
+                })
 				    .style("visibility","hidden")
+            .attr("stroke-width", function(d) {
+              return busyScale(d.values['totalFlights']);
+            })
             .on("mouseover", function(d) {
-                debugger;
                 div.transition()        
                     .duration(200)      
                     .style("opacity", .95);      
@@ -121,8 +128,7 @@
                     "<br/>Avg. Arrival Delay: " + (d.values.meanDelay).toFixed(0) + " minutes." )
                   .style("left", (d3.event.pageX + 20) + "px")     
                     .style("top", (d3.event.pageY - 10) + "px");
-            })
-				    .attr("stroke", 3);
+            });
 
 	        	});
 		}
@@ -218,7 +224,8 @@
             					.style("opacity", 0);   
                 		})
           		.on("click", function(d) {
-          			d3.selectAll("line").transition().style("visibility","hidden");
+                debugger;
+          			d3.selectAll(".route").transition().style("visibility","hidden");
           			var relevant = svg.selectAll(".src-" + d.values.airPortCode);
           			relevant.transition()
           				.style("visibility","visible");

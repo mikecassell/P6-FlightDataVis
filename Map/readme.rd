@@ -38,3 +38,6 @@ http://stackoverflow.com/questions/13897534/add-names-of-the-states-to-a-map-in-
 
 Implimenting a D3 Ordinal Scale for Colors:
 http://synthesis.sbecker.net/articles/2012/07/16/learning-d3-part-6-scales-colors
+
+Curving Paths for visibility:
+http://stackoverflow.com/questions/13455510/curved-line-on-d3-force-directed-tree
