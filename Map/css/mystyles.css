@@ -4,6 +4,7 @@ body {
 
 .path {
 	fill: white;
+  stroke: black;
 }
 
 .route {
@@ -23,12 +24,11 @@ div.tooltip {
   pointer-events: none;         
 }
 
-.path {
-	stroke: black;
-	
+.stateShapes {
+  fill: lightBlue;
 }
 
-.stateLabel {
+.stateNames {
 	font-size: x-small;
 }
 

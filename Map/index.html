@@ -12,14 +12,13 @@
 			width = 1600 - margin,
 			height = 800 - margin;
 
-    var mapAdj = { 'NJ':[22,10],
-                    'RI':[10,30],
-                    'DE':[20,15],'DC':[25,0],'MD':[55,-10],'FL':[20,-10],'LA':[-10,0],'MI':[0,20]};
+    // Adjustments for plotting the State Initials
+    var mapAdj = { 'NJ':[22,10],'RI':[10,30],'DE':[20,15],'DC':[25,0],'MD':[55,-10],'FL':[20,-10],'LA':[-10,0],'MI':[0,20]};
 
     // Create Scales
 		var colorScale = d3.scale.linear()
-		    .domain([.12, .241])
-		    .range(["green", "red"]);
+		    .domain([5, 12, 20])
+		    .range(["green", "orange", "red"]);
 
 		var colorMinScale = d3.scale.pow().exponent(2)
 		    .domain([10, 18, 25])
@@ -57,6 +56,7 @@
 		// Map rendering
 		function renderMap(stateData) {
 			var map = svg.selectAll('path')
+          .attr('class','stateShapes')
   				.data(stateData.features)
   				.enter()
   				.append('path')
@@ -74,10 +74,9 @@
               .data(stateData.features)
               .enter()
               .append("g")
-              .attr("class", "states-names")
+              .attr("class", "stateNames")
               .append("svg:text")
               .text(function(d){
-                debugger;
                 return names[d.properties.NAME];
               })
               .attr("x", function(d){
@@ -226,7 +225,7 @@
                   'airPortCode': airPortCode,
                   'Late' : lateFlights,
                   'LateRate' : ((lateFlights / total ) * 100).toFixed(1) + "%",
-                  'AvgDepDelay' : (totalDelay / total).toFixed(0) + " min",
+                  'AvgDepDelay' : (totalDelay / total).toFixed(0),
                   'x' : center_x,
                   'y' : center_y
                 };
@@ -260,7 +259,7 @@
                .text(function(d) { return d.key;})
                .attr('cx', function(d) { return d.values['x']; })
                .attr('cy', function(d) { return d.values['y']; })
-               .attr('fill', function(d) { return colorScale(+d.values.Late / d.values.Flights) })
+               .attr('fill', function(d) { return colorScale(+d.values.AvgDepDelay) })
                .attr('r', function(d) {
                     return flghtRad(d.values.Flights);
                })
@@ -271,7 +270,7 @@
           				div.html("<b>" + d.key + "</b>" + 
           						"<br/>Total Departing Flights: " + d.values.Flights  +
           						"<br/>Delayed Departure Rate: " + d.values.LateRate + 
-          						"<br/>Avg. Departing Delay: " + d.values.AvgDepDelay) 
+          						"<br/>Avg. Departing Delay: " + d.values.AvgDepDelay + " min") 
           					.style("left", (d3.event.pageX + 20) + "px")     
           				    .style("top", (d3.event.pageY - 10) + "px");
                       	})                  
@@ -292,6 +291,7 @@
 				
         d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
 
+        
        
 	};
   </script>
@@ -323,7 +323,8 @@
   <h1>Flight Delay Information for 2008</h1>
   <h2>Flight delay times for the top 20 US airports by volume of flights in 2008</h2>
   
-  This information was compiled by TODO:Name and represents all the air traffic between the 20 bussiest US airports for domestic flights in 2008 (the last year data was available for.) The size of each airports circle represents its departing volume for the year (proportionally) and the color is shaded from green to red representing the mean departure delay for a flight from that airport. Hovering over an airport will provide a quick summary of departure information (delays and flight volume). Lastly clicking will provide additional route data documenting the arrival delays to the other airports from the one clicked (so you can compare the depature delays in the circles vs. the arrival delays in the routes to see where the bottlenecks are).
+  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports for domestic flights in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
+
 <br />
 <br />
   If you could take a few minutes to provide me feedback on the below points (or anything else that stands out), I would be very grateful for it (I need feedback to finish my course!)

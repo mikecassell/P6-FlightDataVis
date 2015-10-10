@@ -39,6 +39,9 @@ Data Sources:
 	List of Airports with Lat/Lon: 
 	http://openflights.org/data.html
 
+	List of State Initials:
+	https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/us-state-names.tsv	
+
 
 Programming References:
 	CSS sheets in html: 
@@ -67,3 +70,6 @@ Programming References:
 
 	Dynamically move objects to the front of the SVG:
 	http://stackoverflow.com/questions/14167863/how-can-i-bring-a-circle-to-the-front-with-d3
+
+	Adding State Names from Paths:
+	http://stackoverflow.com/questions/13897534/add-names-of-the-states-to-a-map-in-d3-js
