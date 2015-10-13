@@ -161,6 +161,7 @@
                 }), key_func)
       		    .enter().append("path")
                 	.attr("class", "path route src-" + source.key)
+                  .attr('opacity','0.6')
                 	.style("stroke", function(d) {
                       return colorMinScale(d.values['meanDelay']);
                 	})  
@@ -259,6 +260,7 @@
                .text(function(d) { return d.key;})
                .attr('cx', function(d) { return d.values['x']; })
                .attr('cy', function(d) { return d.values['y']; })
+               .attr('opacity','0.6')
                .attr('fill', function(d) { return colorScale(+d.values.AvgDepDelay) })
                .attr('r', function(d) {
                     return flghtRad(d.values.Flights);
@@ -323,16 +325,8 @@
   <h1>Flight Delay Information for 2008</h1>
   <h2>Flight delay times for the top 20 US airports by volume of flights in 2008</h2>
   
-  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports for domestic flights in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
-
-<br />
-<br />
-  If you could take a few minutes to provide me feedback on the below points (or anything else that stands out), I would be very grateful for it (I need feedback to finish my course!)
-    <li>What do you notice in the visualization?</li>
-    <li>What questions do you have about the data?</li>
-    <li>What relationships do you notice?</li>
-    <li>What do you think is the main takeaway from this visualization?</li>
-    <li>Is there something you don’t understand in the graphic?</li>
+  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departuresin 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
+  <br />
   <br />
 </body>
 </html>

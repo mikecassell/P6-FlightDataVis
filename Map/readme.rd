@@ -1,34 +1,47 @@
+Semmaru:
+  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departuresin 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
+	
+Design:
+
+	Initial Thoughts:
+	I originally started with a line chart to illustrate delay information but decided that the data was more easily understood in the context of geography. I first plotted the busiest airports using color to illustrate the average delay for a flight departing that airport and then sized the circles based on the deaprting traffic. This was a good start but didn't give the full picture of which routes had the worst performance so lines were added with the same visual encoding as the circles. Finally that was a bit over-plotted so I used D3 to hide all but the selected airport at any given time.
+
+	Improvements:
+	I used Eamonn's and Kaitlyn'a feedback to improve my route detail by encoding the volume into size and the delays into color more clearly. I also changed from straight lines to paths so there could be a little curve to break up some of the overlap. There are still crowding issues around the NYC area but the rest of the map is much improved. I also added a mouse over event on the route lines to bring the hovered one to focus. I also set partial opacity on the lines and buddbles to further ease the congestion in the NYC area from Andrew's suggestion.
+
+	Using Danny's suggestion, I added the state initials to give a little more detail to the map. I chose not to add color since it was somewhat distracting and didn't add any new information to the visualization.
+
+
 Feedback:
-	Eamonn:
+Eamonn:
 As for your project there, flight data is right up my alley, I deal with it often in various projects.
 
 As for the visualization itself, why is it only the continental US as opposed to the entire US or even the world? Perhaps it’s just me, but why is the map so bland? Why use that particular map and not something like google maps where it is either more colourful or more detailed?
 
 As for the data, no questions really on that, I understand the data.  I do like the fact that the colour of the circles changes to red and gets bigger with the larger averages, that’s a nice touch. Does the lines have a similar meaning?  Also, why just these airports, there are over 10,000 airports in the United States?
 
-	Kaitlyn:
+Kaitlyn:
 The bigger lines can hide smaller ones, it would be better if they were more easily visible. Making it so the lines could toggle when looked at would help.
 
-	Danny:
-Eamonn is right, JQuery is much better to deal with cross browser compatibility compared to javascript.  I personally think it’s much easier to learn.  
-
+Danny:
 There are few points that crossed my mind while looking at the visualization map:
 ·         A legend could be helpful to indicate the meaning of the colored dots.
 ·         In the data itself, displaying the longitude and latitude could also be helpful.
 ·         State Names or Abbreviations on the map for users that might not be familiar with US map.
 ·         Agree with Eamonn that the map could use some more colors to make it more visual.
 
- 
+	Andrew:
 
-Thanks,
- Danny
+My first reaction was a big empty map with a few dots. Perhaps a more compact map may make it more impactful. 
+- Its not clear if these are the 20 most delayed or the 20 busiest
+- Overplotting in the New York City area - three of the busiest most delayed airports. Try change opacity.
+- Labelling the dots would help
+- are these all delays arrival and departures?
 
-Design:
-
-	Improvements:
-	I used Eamonn's and Kaitlyn'a feedback to improve my route detail by encoding the volume into size and the delays into color more clearly. I also changed from straight lines to paths so there could be a little curve to break up some of the overlap. There are still crowding issues around the NYC area but the rest of the map is much improved. I also added a mouse over event on the route lines to bring the hovered one to focus.
-
-
+	Marina:
+Hi Mike,
+What is the mining of the colors and sizes of the bubbles?
+I found the information on tooltips very straightforward.
 
 References:
 
