@@ -11,6 +11,15 @@ body {
   fill-opacity: 0;
 }
 
+.legend {
+  fill: lightGrey;
+}
+
+.legendLine {
+  fill-opacity: 0;
+  stroke-width="5";
+}
+
 div.tooltip {   
   position: absolute;           
   text-align: center;           

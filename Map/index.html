@@ -28,6 +28,10 @@
         .domain([500,10000])
         .range([2,8]);
 
+    var flghtRad = d3.scale.sqrt()
+       .domain([20000, 120000])
+       .range([3, 12]);
+
     // Helper functions
     function key_func(d) {
                 return d['key'];
@@ -51,6 +55,173 @@
 							.scale(1200)
 							.translate([width+1200, height + 465]);
 							
+    // Add a Legend and elements
+    function addLegent() {
+        svg.append('rect')
+            .attr('x', width - 300)
+            .attr('y', height - 425)
+            .attr('width', 200)
+            .attr('class', 'legend')
+            .attr('height', 300);
+
+        svg.append('text')
+            .text('Legend')
+            .attr('x', width - 240)
+            .attr('y', height - 400)
+            .style("font-size","24px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr("text-anchor", "center");
+
+        svg.append('circle')
+            .attr('cx', width - 260)
+            .attr('cy', height - 350)
+            .attr('r', function(d) {
+              return flghtRad(20000);
+            });
+        svg.append('circle')
+            .attr('cx', width - 200)
+            .attr('cy', height - 350)
+            .attr('r', function(d) {
+              return flghtRad(70000);
+            });
+        svg.append('circle')
+            .attr('cx', width - 140)
+            .attr('cy', height - 350)
+            .attr('r', function(d) {
+              return flghtRad(120000);
+            });
+
+        svg.append('text')
+            .text('Low')
+            .attr('x', width - 270)
+            .attr('y', height - 315)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr("text-anchor", "center");
+
+        svg.append('text')
+            .text('Med')
+            .attr('x', width - 212)
+            .attr('y', height - 315)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr("text-anchor", "center");
+
+        svg.append('text')
+            .text('High')
+            .attr('x', width - 152)
+            .attr('y', height - 315)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr("text-anchor", "center");
+
+        svg.append('line')
+            .attr('x1', width - 140)
+            .attr('y1', height - 300)
+            .attr('x2', width - 140)
+            .attr('y2', height - 250)
+            .attr("stroke-width", function(d) {
+                  return busyScale(20000);
+              })
+            .attr('stroke','Black')
+            .attr('opacity','0.6');
+        svg.append('line')
+            .attr('x1', width - 200)
+            .attr('y1', height - 300)
+            .attr('x2', width - 200)
+            .attr('y2', height - 250)
+            .attr("stroke-width", function(d) {
+                  return busyScale(10000);
+              })
+            .attr('stroke','Black')
+            .attr('opacity','0.6');
+        svg.append('line')
+            .attr('x1', width - 260)
+            .attr('y1', height - 300)
+            .attr('x2', width - 260)
+            .attr('y2', height - 250)
+            .attr("stroke-width", function(d) {
+                  return busyScale(2500);
+              })
+            .attr('stroke','Black')
+            .attr('opacity','0.6');
+
+        svg.append('text')
+            .text('Flight Volumes')
+            .attr('x', width - 245)
+            .attr('y', height - 370)
+            .style("font-size","14px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr("text-anchor", "center");
+
+        svg.append('text')
+            .text('Flight Delays')
+            .attr('x', width - 245)
+            .attr('y', height - 200)
+            .style("font-size","14px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr("text-anchor", "center");
+
+        svg.append('circle')
+            .attr('cx', width - 260)
+            .attr('cy', height - 180)
+            .attr('fill', function(d) { return colorScale(0) })
+            .attr('r', function(d) {
+              return flghtRad(70000);
+            });
+        svg.append('circle')
+            .attr('cx', width - 200)
+            .attr('cy', height - 180)
+            .attr('fill', function(d) { return colorScale(15) })
+            .attr('r', function(d) {
+              return flghtRad(70000);
+            });
+        svg.append('circle')
+            .attr('cx', width - 140)
+            .attr('cy', height - 180)
+            .attr('fill', function(d) { return colorScale(30) })
+            .attr('r', function(d) {
+              return flghtRad(70000);
+            });
+
+        svg.append('text')
+            .text('~5 Mins')
+            .attr('x', width - 285)
+            .attr('y', height - 150)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr('opacity', '0.65')
+            .attr("text-anchor", "center");
+
+        svg.append('text')
+            .text('~12 Mins')
+            .attr('x', width - 225)
+            .attr('y', height - 150)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr('opacity', '0.65')
+            .attr("text-anchor", "center");
+
+        svg.append('text')
+            .text('~20 Mins +')
+            .attr('x', width - 165)
+            .attr('y', height - 150)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr('opacity', '0.65')
+            .attr("text-anchor", "center");
+    }
+    
+    addLegent();
 		var path = d3.geo.path().projection(projection, renderMap);
 		
 		// Map rendering
@@ -171,7 +342,7 @@
                       dr = Math.sqrt(dx * dx + dy * dy) * 2.5;
                   return "M" + d.values['x1'] + "," + d.values['y1'] + "A" + dr + "," + dr + " 0 0,1 " + d.values['x2'] + "," + d.values['y2'];
                   })
-      		    .style("visibility","hidden")
+      		    .style("visibility", "hidden")
               .attr("stroke-width", function(d) {
                   return busyScale(d.values['totalFlights']);
               })
@@ -241,15 +412,6 @@
                            .rollup(agg_ports)
                            .entries(data);
 
-            // Set up scaling for bubble sizes by getting the max and then creating a scale
-			var maxFlights  = d3.max(nested, function(d) {
-                return d.values['Flights'];
-            });
-
-			var flghtRad = d3.scale.sqrt()
-                           .domain([0, maxFlights])
-                           .range([0, 10]);
-
             // Create the bubbles at the airports
             svg.append('g')
                .attr("class", "bubble")
@@ -265,7 +427,7 @@
                .attr('r', function(d) {
                     return flghtRad(d.values.Flights);
                })
-               .on("mouseover", function(d) {      
+               .on("mouseover", function(d) { // Adding the mouseover event
           				div.transition()        
           					.duration(200)      
           					.style("opacity", .95);      
@@ -276,12 +438,12 @@
           					.style("left", (d3.event.pageX + 20) + "px")     
           				    .style("top", (d3.event.pageY - 10) + "px");
                       	})                  
-      				.on("mouseout", function(d) {       
+      				.on("mouseout", function(d) { // Adding the mouseout events    
         					div.transition()        
         						.duration(500)      
             					.style("opacity", 0);   
                 		})
-          		.on("click", function(d) {
+          		.on("click", function(d) { // Adding the onclick for the route lines
           			d3.selectAll(".route").transition().style("visibility","hidden");
           			var relevant = svg.selectAll(".src-" + d.values.airPortCode);
           			relevant.transition()
@@ -293,8 +455,6 @@
 				
         d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
 
-        
-       
 	};
   </script>
   <script type="text/javascript">
@@ -325,7 +485,7 @@
   <h1>Flight Delay Information for 2008</h1>
   <h2>Flight delay times for the top 20 US airports by volume of flights in 2008</h2>
   
-  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departuresin 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
+  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
   <br />
   <br />
 </body>

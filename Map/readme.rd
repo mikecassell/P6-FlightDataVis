@@ -11,6 +11,8 @@ Design:
 
 	Using Danny's suggestion, I added the state initials to give a little more detail to the map. I chose not to add color since it was somewhat distracting and didn't add any new information to the visualization.
 
+	Lastly a major point of feedback was figuring out how to display the encodings in a simple way. After adding a legend that displays encoding for the sizing and coloring, I think it makes the visualization much clearer for readers. 
+
 
 Feedback:
 Eamonn:
