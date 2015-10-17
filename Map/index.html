@@ -272,9 +272,11 @@
 
 			plot_points(data);
 		};
-		
+		// Line plotting functions for the intra-airport routes
 		function plot_lines(data) {
+      // Aggregation for routes
 			function aggRoutes(leaves) {
+        // Sum the flight data and mean coordinates
 				var totalFlights = d3.sum(leaves, function(d) {
 					return d["FlightCount"];
 				});
@@ -314,7 +316,7 @@
                   'y2' : center_y2
                 };
 			}
-
+      // Nest for the route aggregates
 			var lineNest = d3.nest()
                 				.key(function(d) { 
                 					return d.Origin;
@@ -325,15 +327,17 @@
                 				.rollup(aggRoutes)
                 				.entries(data);
 
+      // Iterate through the 
       lineNest.forEach(function(source) {
-        	svg.append('g').selectAll("path")
+        	svg.append('g').selectAll("path") // Sort to ensure smaller paths are on top of larger as default
               .data(source.values.sort(function(a, b) { 
                     return b.values['totalFlights'] - a.values['totalFlights'];
                 }), key_func)
-      		    .enter().append("path")
+      		    .enter().append("path") // Append the paths
                 	.attr("class", "path route src-" + source.key)
                   .attr('opacity','0.6')
                 	.style("stroke", function(d) {
+                      // scale line colors
                       return colorMinScale(d.values['meanDelay']);
                 	})  
                   .attr("d", function(d) {
@@ -342,11 +346,13 @@
                       dr = Math.sqrt(dx * dx + dy * dy) * 2.5;
                   return "M" + d.values['x1'] + "," + d.values['y1'] + "A" + dr + "," + dr + " 0 0,1 " + d.values['x2'] + "," + d.values['y2'];
                   })
-      		    .style("visibility", "hidden")
+      		    .style("visibility", "hidden") // Hide the paths so we can just show the active ones
               .attr("stroke-width", function(d) {
+                  // Scale the line widths
                   return busyScale(d.values['totalFlights']);
               })
               .on("mouseover", function(d) {
+                  // Add the mouseover pop up to show flight data
                   div.transition()        
                       .duration(200)      
                       .style("opacity", .95);      
@@ -356,6 +362,7 @@
                       .style("left", (d3.event.pageX + 20) + "px")     
                       .style("top", (d3.event.pageY - 10) + "px");
                   var sel = d3.select(this);
+                  // Bring the active path to the front for visibility
                   sel.moveToFront();
               });
       });  
@@ -363,6 +370,7 @@
 
 		// Point plotting 
 		function plot_points(data) {
+            // Aggregate function for airports
             function agg_ports(leaves) {
                 var total = d3.sum(leaves, function(d) {
                     return d['FlightCount'];
@@ -403,7 +411,6 @@
                 };
             }
 
-        	
             // Create our nested data structure
             var nested = d3.nest()
                            .key(function(d) {
@@ -413,7 +420,7 @@
                            .entries(data);
 
             // Create the bubbles at the airports
-            svg.append('g')
+            svg.append('g') // Append each airport as a bubble
                .attr("class", "bubble")
                .selectAll("circle")
                .data(nested)
@@ -425,9 +432,10 @@
                .attr('opacity','0.6')
                .attr('fill', function(d) { return colorScale(+d.values.AvgDepDelay) })
                .attr('r', function(d) {
+                    // Scaling for radius based on flight counts
                     return flghtRad(d.values.Flights);
                })
-               .on("mouseover", function(d) { // Adding the mouseover event
+               .on("mouseover", function(d) { // Adding the mouseover event to display airport data
           				div.transition()        
           					.duration(200)      
           					.style("opacity", .95);      
@@ -438,7 +446,7 @@
           					.style("left", (d3.event.pageX + 20) + "px")     
           				    .style("top", (d3.event.pageY - 10) + "px");
                       	})                  
-      				.on("mouseout", function(d) { // Adding the mouseout events    
+      				.on("mouseout", function(d) { // Adding the mouseout events to hide display
         					div.transition()        
         						.duration(500)      
             					.style("opacity", 0);   
@@ -485,7 +493,7 @@
   <h1>Flight Delay Information for 2008</h1>
   <h2>Flight delay times for the top 20 US airports by volume of flights in 2008</h2>
   
-  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
+  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports. Click on an airport for detailed information and route data between that airport and the others.
   <br />
   <br />
 </body>
