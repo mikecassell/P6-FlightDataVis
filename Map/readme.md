@@ -93,11 +93,5 @@ http://stackoverflow.com/questions/14167863/how-can-i-bring-a-circle-to-the-fron
 Adding State Names from Paths:
 http://stackoverflow.com/questions/13897534/add-names-of-the-states-to-a-map-in-d3-js
 
-
-To Do:
-- Rescale the colorscale for routes
-- Add second color scale with numbers to the legend
-- Create xy scale for the legend to make layout easier
-- Add numbers to widths part of legend
-- Get rid of the Legend label... un-needed
-- Figure out how to tell the 'story' in the chart. Show that delaying departures seem very tightly correlated to the arrival delay at the destination. GOGI. Use animation maybe?
+Scatterplot helpers:
+http://bl.ocks.org/weiglemc/6185069
