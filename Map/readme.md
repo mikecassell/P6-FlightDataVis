@@ -11,9 +11,11 @@ I originally started with a line chart to illustrate delay information but decid
 ### Improvements:
 I used Eamonn's and Kaitlyn'a feedback to improve my route detail by encoding the volume into size and the delays into color more clearly. I also changed from straight lines to paths so there could be a little curve to break up some of the overlap. There are still crowding issues around the NYC area but the rest of the map is much improved. I also added a mouse over event on the route lines to bring the hovered one to focus. I also set partial opacity on the lines and buddbles to further ease the congestion in the NYC area from Andrew's suggestion.
 
-Using Danny's suggestion, I added the state initials to give a little more detail to the map. I chose not to add color since it was somewhat distracting and didn't add any new information to the visualization.
+Using Danny's suggestion, I added the state initials to give a little more detail to the map. I chose not to add color since it was somewhat distracting and didn't add any new information to the visualization. Lastly a major point of feedback was figuring out how to display the encodings in a simple way. After adding a legend that displays encoding for the sizing and coloring, I think it makes the visualization much clearer for readers. 
 
-Lastly a major point of feedback was figuring out how to display the encodings in a simple way. After adding a legend that displays encoding for the sizing and coloring, I think it makes the visualization much clearer for readers. 
+Once I received feedback from grading, it became clear I was missing the story element from my visualization and it was more exploratory than explanatory. I added a scatter plot to really call out the relationship between departing delay and arriving delay as it has surprised me that it was so closely aligned (I had assumed most arrival delay was due to weather or other in flight issues, I was really wrong!) I also added a single paragraph to start the reader along that relationship but didn't add animations as I still really want them to interact vs. be shown the relationship in more detail.
+
+Through the versioning on GitHub you can watch the evolution of the code from a very basic chart through a detailed map with a supporting scatterplot.
 
 
 ## Feedback:
