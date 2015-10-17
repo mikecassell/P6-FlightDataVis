@@ -17,11 +17,11 @@
 
     // Create Scales
 		var colorScale = d3.scale.linear()
-		    .domain([5, 12, 20])
+		    .domain([8, 11, 14])
 		    .range(["green", "orange", "red"]);
 
 		var colorMinScale = d3.scale.pow().exponent(2)
-		    .domain([10, 18, 25])
+		    .domain([6, 10, 15])
 		    .range(["green", "orange", "red"]);
 
     var busyScale = d3.scale.sqrt()
@@ -181,28 +181,28 @@
         svg.append('circle')
             .attr('cx', c1)
             .attr('cy', cy)
-            .attr('fill', function(d) { return colorScale(0) })
+            .attr('fill', function(d) { return colorScale(8) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
         svg.append('circle')
             .attr('cx', c2)
             .attr('cy', cy)
-            .attr('fill', function(d) { return colorScale(15) })
+            .attr('fill', function(d) { return colorScale(11) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
         svg.append('circle')
             .attr('cx', c3)
             .attr('cy', cy)
-            .attr('fill', function(d) { return colorScale(30) })
+            .attr('fill', function(d) { return colorScale(15) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
 
         var labY = ly + 250;
         svg.append('text')
-            .text('~5 Mins')
+            .text('~8 Mins')
             .attr('x', c1 - 25)
             .attr('y', labY)
             .style("font-size","12px")
@@ -212,7 +212,7 @@
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('~12 Mins')
+            .text('~11 Mins')
             .attr('x', c2 - 25)
             .attr('y', labY)
             .style("font-size","12px")
@@ -222,7 +222,7 @@
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('~20 Mins +')
+            .text('~15 Mins +')
             .attr('x', c3 - 25)
             .attr('y', labY)
             .style("font-size","12px")
@@ -234,7 +234,7 @@
         // Color scalred route lines
         var labY = ly + 360;
         svg.append('text')
-            .text('~5 Mins')
+            .text('~6 Mins')
             .attr('x', c1 - 25)
             .attr('y', labY)
             .style("font-size","12px")
@@ -244,7 +244,7 @@
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('~15 Mins')
+            .text('~11 Mins')
             .attr('x', c2 - 25)
             .attr('y', labY)
             .style("font-size","12px")
@@ -254,7 +254,7 @@
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('~25 Mins +')
+            .text('~15 Mins +')
             .attr('x', c3 - 25)
             .attr('y', labY)
             .style("font-size","12px")
@@ -273,7 +273,7 @@
             .attr("stroke-width", function(d) {
                   return busyScale(20000);
               })
-            .attr('stroke', function(d) { return colorScale(0) })
+            .attr('stroke', function(d) { return colorScale(6) })
             .attr('opacity','0.6');
         svg.append('line')
             .attr('x1', c2)
@@ -283,7 +283,7 @@
             .attr("stroke-width", function(d) {
                   return busyScale(20000);
               })
-            .attr('stroke', function(d) { return colorScale(15) })
+            .attr('stroke', function(d) { return colorScale(11) })
             .attr('opacity','0.6');
         svg.append('line')
             .attr('x1', c3)
@@ -293,7 +293,7 @@
             .attr("stroke-width", function(d) {
                   return busyScale(20000);
               })
-            .attr('stroke', function(d) { return colorScale(25) })
+            .attr('stroke', function(d) { return colorScale(15) })
             .attr('opacity','0.6');
     }
     
@@ -728,7 +728,7 @@
   This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports. Click on an airport for detailed information and route data between that airport and the others.
 </p>
 <p>
-  The inetersting story here is that while you would expect that being delayed leaving an airport would contribute to arriving late at your destination, it turns out that the departure delay almost entirely explains arrival delays. While we can't prove causation, in-air and landing delays appear to make up very little of the time you will run late when arriving at your destination. 
+  The inetersting story here is that it appears that your arrival delay will depend almost entirely on the airports you fly through with very little attributed to your flight. Primarily we can see a relationship between the departure delay and your subsequent arrival delay shown in the scatterplot below. Even more interesting, even when leaving an airport with a very good on time departure rate, flying into a slow one will slow your arrival (check out Salt Lake City with an average departure delay time of under 10 minutes but with poor arrival delays to both San Francisco and Chicago which have poorer on time departure rates.)
 </p>
   <br />
   <br />
