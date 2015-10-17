@@ -57,45 +57,43 @@
 							
     // Add a Legend and elements
     function addLegent() {
+        var lx = width - 300;
+        var ly = height - 500;
+        var c1 = lx + 40;
+        var c2 = lx + 100;
+        var c3 = lx + 160;
+
         svg.append('rect')
-            .attr('x', width - 300)
-            .attr('y', height - 425)
+            .attr('x', lx)
+            .attr('y', ly)
             .attr('width', 200)
             .attr('class', 'legend')
-            .attr('height', 300);
+            .attr('height', 380);
 
-        svg.append('text')
-            .text('Legend')
-            .attr('x', width - 240)
-            .attr('y', height - 400)
-            .style("font-size","24px")
-            .style("font-family", "sans-serif")
-            .style("fill", "black")
-            .attr("text-anchor", "center");
-
+        var ly1 = ly + 50;
         svg.append('circle')
-            .attr('cx', width - 260)
-            .attr('cy', height - 350)
+            .attr('cx', c1)
+            .attr('cy', ly1)
             .attr('r', function(d) {
               return flghtRad(20000);
             });
         svg.append('circle')
-            .attr('cx', width - 200)
-            .attr('cy', height - 350)
+            .attr('cx', c2)
+            .attr('cy', ly1)
             .attr('r', function(d) {
               return flghtRad(70000);
             });
         svg.append('circle')
-            .attr('cx', width - 140)
-            .attr('cy', height - 350)
+            .attr('cx', c3)
+            .attr('cy', ly1)
             .attr('r', function(d) {
               return flghtRad(120000);
             });
 
         svg.append('text')
             .text('Low')
-            .attr('x', width - 270)
-            .attr('y', height - 315)
+            .attr('x', c1 - 10)
+            .attr('y', ly + 95)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
@@ -103,8 +101,8 @@
 
         svg.append('text')
             .text('Med')
-            .attr('x', width - 212)
-            .attr('y', height - 315)
+            .attr('x', c2 - 10)
+            .attr('y', ly + 95)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
@@ -112,38 +110,40 @@
 
         svg.append('text')
             .text('High')
-            .attr('x', width - 152)
-            .attr('y', height - 315)
+            .attr('x', c3 - 10)
+            .attr('y', ly + 95)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
             .attr("text-anchor", "center");
 
+        var ly1 = ly + 125;
+        var ly2 = ly1 + 40;
         svg.append('line')
-            .attr('x1', width - 140)
-            .attr('y1', height - 300)
-            .attr('x2', width - 140)
-            .attr('y2', height - 250)
+            .attr('x1', c3)
+            .attr('y1', ly1)
+            .attr('x2', lx + 160)
+            .attr('y2', ly2)
             .attr("stroke-width", function(d) {
                   return busyScale(20000);
               })
             .attr('stroke','Black')
             .attr('opacity','0.6');
         svg.append('line')
-            .attr('x1', width - 200)
-            .attr('y1', height - 300)
-            .attr('x2', width - 200)
-            .attr('y2', height - 250)
+            .attr('x1', c2)
+            .attr('y1', ly1)
+            .attr('x2', lx + 100)
+            .attr('y2', ly2)
             .attr("stroke-width", function(d) {
                   return busyScale(10000);
               })
             .attr('stroke','Black')
             .attr('opacity','0.6');
         svg.append('line')
-            .attr('x1', width - 260)
-            .attr('y1', height - 300)
-            .attr('x2', width - 260)
-            .attr('y2', height - 250)
+            .attr('x1', c1)
+            .attr('y1', ly1)
+            .attr('x2', lx + 40)
+            .attr('y2', ly2)
             .attr("stroke-width", function(d) {
                   return busyScale(2500);
               })
@@ -152,48 +152,59 @@
 
         svg.append('text')
             .text('Flight Volumes')
-            .attr('x', width - 245)
-            .attr('y', height - 370)
+            .attr('x', lx + 50)
+            .attr('y', ly + 20)
             .style("font-size","14px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('Flight Delays')
-            .attr('x', width - 245)
-            .attr('y', height - 200)
+            .text('Departure Delays')
+            .attr('x', lx + 50)
+            .attr('y', ly + 200)
             .style("font-size","14px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
             .attr("text-anchor", "center");
 
+        svg.append('text')
+            .text('Arrival Delay Time')
+            .attr('x', lx + 50)
+            .attr('y', ly + 280)
+            .style("font-size","14px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr("text-anchor", "center");
+
+        var cy = ly + 220;
         svg.append('circle')
-            .attr('cx', width - 260)
-            .attr('cy', height - 180)
+            .attr('cx', c1)
+            .attr('cy', cy)
             .attr('fill', function(d) { return colorScale(0) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
         svg.append('circle')
-            .attr('cx', width - 200)
-            .attr('cy', height - 180)
+            .attr('cx', c2)
+            .attr('cy', cy)
             .attr('fill', function(d) { return colorScale(15) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
         svg.append('circle')
-            .attr('cx', width - 140)
-            .attr('cy', height - 180)
+            .attr('cx', c3)
+            .attr('cy', cy)
             .attr('fill', function(d) { return colorScale(30) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
 
+        var labY = ly + 250;
         svg.append('text')
             .text('~5 Mins')
-            .attr('x', width - 285)
-            .attr('y', height - 150)
+            .attr('x', c1 - 25)
+            .attr('y', labY)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
@@ -202,8 +213,8 @@
 
         svg.append('text')
             .text('~12 Mins')
-            .attr('x', width - 225)
-            .attr('y', height - 150)
+            .attr('x', c2 - 25)
+            .attr('y', labY)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
@@ -212,13 +223,78 @@
 
         svg.append('text')
             .text('~20 Mins +')
-            .attr('x', width - 165)
-            .attr('y', height - 150)
+            .attr('x', c3 - 25)
+            .attr('y', labY)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
             .attr('opacity', '0.65')
             .attr("text-anchor", "center");
+
+        // Color scalred route lines
+        var labY = ly + 360;
+        svg.append('text')
+            .text('~5 Mins')
+            .attr('x', c1 - 25)
+            .attr('y', labY)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr('opacity', '0.65')
+            .attr("text-anchor", "center");
+
+        svg.append('text')
+            .text('~15 Mins')
+            .attr('x', c2 - 25)
+            .attr('y', labY)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr('opacity', '0.65')
+            .attr("text-anchor", "center");
+
+        svg.append('text')
+            .text('~25 Mins +')
+            .attr('x', c3 - 25)
+            .attr('y', labY)
+            .style("font-size","12px")
+            .style("font-family", "sans-serif")
+            .style("fill", "black")
+            .attr('opacity', '0.65')
+            .attr("text-anchor", "center");
+
+        var ly1 = ly + 300;
+        var ly2 = ly1 + 40;
+        svg.append('line')
+            .attr('x1', c1)
+            .attr('y1', ly1)
+            .attr('x2', c1)
+            .attr('y2', ly2)
+            .attr("stroke-width", function(d) {
+                  return busyScale(20000);
+              })
+            .attr('stroke', function(d) { return colorScale(0) })
+            .attr('opacity','0.6');
+        svg.append('line')
+            .attr('x1', c2)
+            .attr('y1', ly1)
+            .attr('x2', c2)
+            .attr('y2', ly2)
+            .attr("stroke-width", function(d) {
+                  return busyScale(20000);
+              })
+            .attr('stroke', function(d) { return colorScale(15) })
+            .attr('opacity','0.6');
+        svg.append('line')
+            .attr('x1', c3)
+            .attr('y1', ly1)
+            .attr('x2', c3)
+            .attr('y2', ly2)
+            .attr("stroke-width", function(d) {
+                  return busyScale(20000);
+              })
+            .attr('stroke', function(d) { return colorScale(25) })
+            .attr('opacity','0.6');
     }
     
     addLegent();
