@@ -20,17 +20,50 @@ body {
   stroke-width="5";
 }
 
+.buttonBox {
+  fill: lightGrey;
+  fill-opacity: 0.5;
+}
+
+.buttonLegend {
+    position: fixed;
+    top: 320px;
+    left: 40px;
+    font-size:22px;
+}
+
+.meanDelay {
+    position: fixed;
+    top: 750px;
+    left: 40px;
+    font-size:22px;
+    visibility: hidden;
+}
+
+.routes_buttons {
+    position: fixed;
+    background-color: lightGrey;
+    top: 350px;
+    left: 50px;
+}
+
+.routes_buttons div {
+    background-color: lightBlue;
+    padding: 3px;
+    margin: 7px;
+}
+
 div.tooltip {   
-  position: absolute;           
-  text-align: center;           
-  width: 240px;                  
-  height: 60px;                 
-  padding: 2px;             
-  font: 12px sans-serif;        
-  background: lightsteelblue;   
-  border: 0px;      
-  border-radius: 8px;           
-  pointer-events: none;         
+    position: absolute;           
+    text-align: center;           
+    width: 240px;                  
+    height: 60px;                 
+    padding: 2px;             
+    font: 12px sans-serif;        
+    background: lightsteelblue;   
+    border: 0px;      
+    border-radius: 8px;           
+    pointer-events: none;         
 }
 
 .stateShapes {

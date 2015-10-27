@@ -1,7 +1,7 @@
 # Mike's Visualization Project
 
 ## Summary:
-This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports.
+This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports and the impact of the destination airport on the arrival delay.
 	
 ## Design:
 
@@ -13,7 +13,9 @@ I used Eamonn's and Kaitlyn'a feedback to improve my route detail by encoding th
 
 Using Danny's suggestion, I added the state initials to give a little more detail to the map. I chose not to add color since it was somewhat distracting and didn't add any new information to the visualization. Lastly a major point of feedback was figuring out how to display the encodings in a simple way. After adding a legend that displays encoding for the sizing and coloring, I think it makes the visualization much clearer for readers. 
 
-Once I received feedback from grading, it became clear I was missing the story element from my visualization and it was more exploratory than explanatory. I added a scatter plot to really call out the relationship between departing delay and arriving delay as it has surprised me that it was so closely aligned (I had assumed most arrival delay was due to weather or other in flight issues, I was really wrong!) I also added a single paragraph to start the reader along that relationship but didn't add animations as I still really want them to interact vs. be shown the relationship in more detail.
+Once I received feedback from my first grading, it became clear I was missing the story element from my visualization and it was more exploratory than explanatory. I added a scatter plot to really call out the relationship between departing delay and arriving delay as it has surprised me that it was so closely aligned (I had assumed most arrival delay was due to weather or other in flight issues, I was really wrong!) I also added a single paragraph to start the reader along that relationship but didn't add animations as I still really want them to interact vs. be shown the relationship in more detail.
+
+Unfortunatly that didn't really make the story clearer to the viewer. After getting additional feedback from grading, I classified the airports by level of delay and made it easy to illustrate how the arriving airport made a big difference in the average arrival delay for airports where people are likely to take off on time.
 
 Through the versioning on GitHub you can watch the evolution of the code from a very basic chart through a detailed map with a supporting scatterplot.
 

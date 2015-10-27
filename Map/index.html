@@ -8,16 +8,35 @@
   	function draw(data) {
   		// Initial setup
 		"use strict";
+    var fadeTime = 500;
 		var margin = 75,
 			width = 1800 - margin,
 			height = 800 - margin;
+
+    // Prepare the summary data for later
+    var arrLen = data.length;
+    for (var i = 0; i < arrLen; i++) {
+        if(!(data[i]["destRating"] in sumStats))
+        {
+            sumStats[data[i]["destRating"]] = {};
+        }
+        if(!(data[i]["origRating"] in sumStats[data[i]["destRating"]]))
+        {
+            sumStats[data[i]["destRating"]][data[i]["origRating"]] = [+data[i]["ArrDelay"],+data[i]["FlightCount"]];
+        }
+        else {
+          sumStats[data[i]["destRating"]][data[i]["origRating"]][0] += +data[i]["ArrDelay"];
+          sumStats[data[i]["destRating"]][data[i]["origRating"]][1] += +data[i]["FlightCount"];
+        }
+        
+    }   
 
     // Adjustments for plotting the State Initials
     var mapAdj = { 'NJ':[22,10],'RI':[-10,30],'DE':[20,15],'DC':[25,0],'MD':[55,-10],'FL':[20,-10],'LA':[-10,0],'MI':[0,20]};
 
     // Create Scales
 		var colorScale = d3.scale.linear()
-		    .domain([8, 11, 14])
+		    .domain([1, 2, 3])
 		    .range(["green", "orange", "red"]);
 
 		var colorMinScale = d3.scale.pow().exponent(2)
@@ -57,8 +76,8 @@
 							
     // Add a Legend and elements
     function addLegent() {
-        var lx = width - 300;
-        var ly = height - 500;
+        var lx = width - 270;
+        var ly = height - 475;
         var c1 = lx + 40;
         var c2 = lx + 100;
         var c3 = lx + 160;
@@ -160,7 +179,7 @@
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('Departure Delays')
+            .text('Airport Rating')
             .attr('x', lx + 50)
             .attr('y', ly + 200)
             .style("font-size","14px")
@@ -181,54 +200,51 @@
         svg.append('circle')
             .attr('cx', c1)
             .attr('cy', cy)
-            .attr('fill', function(d) { return colorScale(8) })
+            .attr('fill', function(d) { return colorScale(1) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
         svg.append('circle')
             .attr('cx', c2)
             .attr('cy', cy)
-            .attr('fill', function(d) { return colorScale(11) })
+            .attr('fill', function(d) { return colorScale(2) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
         svg.append('circle')
             .attr('cx', c3)
             .attr('cy', cy)
-            .attr('fill', function(d) { return colorScale(15) })
+            .attr('fill', function(d) { return colorScale(3) })
             .attr('r', function(d) {
               return flghtRad(70000);
             });
 
         var labY = ly + 250;
         svg.append('text')
-            .text('~8 Mins')
+            .text('Class 1')
             .attr('x', c1 - 25)
             .attr('y', labY)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
-            .attr('opacity', '0.65')
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('~11 Mins')
+            .text('Class 2')
             .attr('x', c2 - 25)
             .attr('y', labY)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
-            .attr('opacity', '0.65')
             .attr("text-anchor", "center");
 
         svg.append('text')
-            .text('~15 Mins +')
+            .text('Class 3')
             .attr('x', c3 - 25)
             .attr('y', labY)
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
-            .attr('opacity', '0.65')
             .attr("text-anchor", "center");
 
         // Color scalred route lines
@@ -240,7 +256,6 @@
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
-            .attr('opacity', '0.65')
             .attr("text-anchor", "center");
 
         svg.append('text')
@@ -250,7 +265,6 @@
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
-            .attr('opacity', '0.65')
             .attr("text-anchor", "center");
 
         svg.append('text')
@@ -260,7 +274,6 @@
             .style("font-size","12px")
             .style("font-family", "sans-serif")
             .style("fill", "black")
-            .attr('opacity', '0.65')
             .attr("text-anchor", "center");
 
         var ly1 = ly + 300;
@@ -273,7 +286,7 @@
             .attr("stroke-width", function(d) {
                   return busyScale(20000);
               })
-            .attr('stroke', function(d) { return colorScale(6) })
+            .attr('stroke', function(d) { return colorScale(1) })
             .attr('opacity','0.6');
         svg.append('line')
             .attr('x1', c2)
@@ -283,7 +296,7 @@
             .attr("stroke-width", function(d) {
                   return busyScale(20000);
               })
-            .attr('stroke', function(d) { return colorScale(11) })
+            .attr('stroke', function(d) { return colorScale(2) })
             .attr('opacity','0.6');
         svg.append('line')
             .attr('x1', c3)
@@ -293,7 +306,7 @@
             .attr("stroke-width", function(d) {
                   return busyScale(20000);
               })
-            .attr('stroke', function(d) { return colorScale(15) })
+            .attr('stroke', function(d) { return colorScale(3) })
             .attr('opacity','0.6');
     }
     
@@ -357,9 +370,25 @@
 					return d["FlightCount"];
 				});
 
+        var dest = d3.max(leaves, function(d) {
+          return d["Dest"];
+        });
+
+        var orig = d3.max(leaves, function(d) {
+          return d["Origin"];
+        });
+
 				var arrDel = d3.sum(leaves, function(d) {
 					return d["ArrDelay"];
 				});
+
+        var origRating = d3.max(leaves, function(d) {
+          return d["origRating"];
+        });
+
+        var destRating = d3.max(leaves, function(d) {
+          return d["destRating"];
+        });
 
 				var coords1 = leaves.map(function(d) {
 					return projection([+d.LongOrigin, +d.LatOrigin])
@@ -373,24 +402,30 @@
                     return d[0];
                 });
 
-                var center_y1 = d3.mean(coords1, function(d) {
-                    return d[1];
-                });
-                var center_x2 = d3.mean(coords2, function(d) {
-                    return d[0];
-                });
+        var center_y1 = d3.mean(coords1, function(d) {
+            return d[1];
+        });
 
-                var center_y2 = d3.mean(coords2, function(d) {
-                    return d[1];
-                });
-                return {
-                  'meanDelay' : +arrDel / +totalFlights,
-                  'totalFlights' : +totalFlights,
-                  'x1' : center_x1,
-                  'y1' : center_y1,
-                  'x2' : center_x2,
-                  'y2' : center_y2
-                };
+        var center_x2 = d3.mean(coords2, function(d) {
+            return d[0];
+        });
+
+        var center_y2 = d3.mean(coords2, function(d) {
+            return d[1];
+        });
+        return {
+          'orig' : orig,
+          'dest' : dest,
+          'meanDelay' : +arrDel / +totalFlights,
+          'totalFlights' : +totalFlights,
+          'origRating':+origRating,
+          'destRating':+destRating,
+          'arrDel':+arrDel,
+          'x1' : center_x1,
+          'y1' : center_y1,
+          'x2' : center_x2,
+          'y2' : center_y2
+        };
 			}
       // Nest for the route aggregates
 			var lineNest = d3.nest()
@@ -403,26 +438,31 @@
                 				.rollup(aggRoutes)
                 				.entries(data);
 
-      // Iterate through the 
+      // Iterate through the routes
       lineNest.forEach(function(source) {
         	svg.append('g').selectAll("path") // Sort to ensure smaller paths are on top of larger as default
               .data(source.values.sort(function(a, b) { 
                     return b.values['totalFlights'] - a.values['totalFlights'];
                 }), key_func)
-      		    .enter().append("path") // Append the paths
-                	.attr("class", "path route src-" + source.key)
-                  .attr('opacity','0.6')
-                	.style("stroke", function(d) {
-                      // scale line colors
-                      return colorMinScale(d.values['meanDelay']);
-                	})  
-                  .attr("d", function(d) {
-                  var dx = d.values['x2'] - d.values['x1'],
-                      dy = d.values['y2']- d.values['y1'],
-                      dr = Math.sqrt(dx * dx + dy * dy) * 2.5;
-                  return "M" + d.values['x1'] + "," + d.values['y1'] + "A" + dr + "," + dr + " 0 0,1 " + d.values['x2'] + "," + d.values['y2'];
-                  })
-      		    .style("visibility", "hidden") // Hide the paths so we can just show the active ones
+      		    .enter()
+              .append("path") // Append the paths
+              .attr("class", function(d){
+                      return "path route src-" + d.values['orig'] + " dst-" + d.values['dest'] + " Class_" + d.values['origRating'] + "_to_Class_" + d.values['destRating'];
+              })
+              .attr('opacity','0.6')
+            	.style("stroke", function(d) {
+                  // scale line colors
+                  return colorMinScale(d.values['meanDelay']);
+            	})  
+              .classed("hidden",true)
+              .attr("visibility","hidden")
+              .attr("d", function(d) {
+              var dx = d.values['x2'] - d.values['x1'],
+                  dy = d.values['y2']- d.values['y1'],
+                  dr = Math.sqrt(dx * dx + dy * dy) * 2.5;
+              return "M" + d.values['x1'] + "," + d.values['y1'] + "A" + dr + "," + dr + " 0 0,1 " + d.values['x2'] + "," + d.values['y2'];
+              })
+      		    .style("opacity", "0") // Hide the paths so we can just show the active ones
               .attr("stroke-width", function(d) {
                   // Scale the line widths
                   return busyScale(d.values['totalFlights']);
@@ -432,7 +472,7 @@
                   div.transition()        
                       .duration(200)      
                       .style("opacity", .95);      
-                  div.html("<b>Flights from " + this.classList[2].substring(4, 7) + " to " + d.key + "</b>" + 
+                  div.html("<b>Flights from " + this.classList[2].substring(4, 7) + " to " + this.classList[3].substring(4, 7)  + "</b>" + 
                       "<br/>Total Flights: " + d.values.totalFlights  +
                       "<br/>Avg. Arrival Delay: " + (d.values.meanDelay).toFixed(0) + " minutes." )
                       .style("left", (d3.event.pageX + 20) + "px")     
@@ -459,12 +499,13 @@
                     return d['Origin'];
                 });
 
+                var origRating = d3.max(leaves, function(d) {
+                    return d['origRating'];
+                });
+
+
 				        var totalDelay = d3.sum(leaves, function(d) {
                 	return d['DepDelay']
-                }) 
-
-                var lateFlights = d3.sum(leaves, function(d) {
-                	return d['DelFlights']
                 }) 
 
                 var coords = leaves.map(function(d) {
@@ -482,8 +523,7 @@
                 return {
                   'Flights' : total,
                   'airPortCode': airPortCode,
-                  'Late' : lateFlights,
-                  'LateRate' : ((lateFlights / total ) * 100).toFixed(1) + "%",
+                  'origRating':origRating,
                   'AvgDepDelay' : (totalDelay / total).toFixed(0),
                   'x' : center_x,
                   'y' : center_y
@@ -509,194 +549,122 @@
                .attr('cx', function(d) { return d.values['x']; })
                .attr('cy', function(d) { return d.values['y']; })
                .attr('opacity','0.6')
-               .attr('fill', function(d) { return colorScale(+d.values.AvgDepDelay) })
+               .attr('fill', function(d) { 
+                return colorScale(+d.values.origRating) 
+              })
                .attr('r', function(d) {
                     // Scaling for radius based on flight counts
                     return flghtRad(d.values.Flights);
                })
                .on("mouseover", function(d) { // Adding the mouseover event to display airport data
           				div.transition()        
-          					.duration(200)      
+          					.duration(fadeTime)      
           					.style("opacity", .95);      
           				div.html("<b>" + d.key + "</b>" + 
           						"<br/>Total Departing Flights: " + d.values.Flights  +
-          						"<br/>Delayed Departure Rate: " + d.values.LateRate + 
           						"<br/>Avg. Departing Delay: " + d.values.AvgDepDelay + " min") 
           					.style("left", (d3.event.pageX + 20) + "px")     
           				    .style("top", (d3.event.pageY - 10) + "px");
                       	})                  
       				.on("mouseout", function(d) { // Adding the mouseout events to hide display
         					div.transition()        
-        						.duration(500)      
+        						.duration(fadeTime)      
             					.style("opacity", 0);   
                 		})
           		.on("click", function(d) { // Adding the onclick for the route lines
-          			d3.selectAll(".route").transition().style("visibility","hidden");
-          			var relevant = svg.selectAll(".src-" + d.values.airPortCode);
-          			relevant.transition()
-          				.style("visibility","visible");
+                d3.selectAll(".meanDelay")
+                    .style("visibility","hidden");         			
+
+                d3.selectAll(".route")
+                    .transition()
+                    .duration(fadeTime)
+                    .style("opacity","0")
+                    .attr("visibility","hidden");
+          			
+                svg.selectAll(".src-" + d.values.airPortCode)
+          			   .transition()
+                   .attr("visibility","visible")
+                   .duration(fadeTime)
+                   .style("opacity",".6");
           			testMe(d.values.airPortCode);
           		});
               	plot_lines(data);
         	}
 				
+          function addButtons() {
+            
+
+            var routeMix = [];
+                for (var orig = 1; orig  <= 3; orig++) {
+                    for (var dest = 1; dest <= 3; dest++) {
+                        routeMix.push("Class " + orig + " to Class " + dest);
+                    }
+                }
+
+            var buttonLabel = d3.select("body")
+                        .append("div")
+                        .attr("class", "buttonLegend")
+                        .append("div")
+                        .text("Class Comparison");
+
+            var buttonLabel = d3.select("body")
+                        .append("div")
+                        .attr("class", "meanDelay")
+                        .append("div")
+                        .text("TEST mean delay was");
+
+            var buttons = d3.select("body")
+                        .append("div")
+                        .attr("class", "routes_buttons")
+                        .selectAll("div")
+                        .data(routeMix)
+                        .enter()
+                        .append("div")
+                        .text(function(d) {
+                            return d;
+                        });
+
+            buttons.on("click", function(d) {
+                    d3.select(".routes_buttons")
+                        .selectAll("div")
+                        .transition()
+                        .duration(fadeTime)
+                        .style("color", "black")
+                        .style("background", "lightBlue");
+
+                    d3.select(this)
+                        .transition()
+                        .duration(fadeTime)
+                        .style("background", "lightBlue")
+                        .style("color", "white");
+
+                    var lookup = "." + d.replace(/ /g,"_");
+                    d3.selectAll(".route")
+                        .transition()
+                        .duration(fadeTime)
+                        .attr("visibility","hidden")
+                        .style("opacity","0");
+
+                    svg.selectAll(lookup)
+                        .attr("visibility","visible")
+                        .transition()
+                        .duration(fadeTime)
+                        .style("opacity",".5");
+                    updateAvg(lookup);
+                });
+            }
+            function updateAvg(lookup) {
+                var address = lookup.split("_");
+                var stats = sumStats[address[1]][address[4]];
+                d3.selectAll(".meanDelay")
+                    .style("visibility","visible")
+                    .text(function (d) {
+                      return "The mean arrival delays of these routes was " + (+stats[0]/+stats[1]).toFixed(0) + " minutes.";
+                    });
+                
+            }
+          addButtons();
         d3.json("data/gz_2010_us_040_00_5m.json", renderMap);
-
-      function addScatter(data) {
-        var maxDep = 0;
-        var maxArr = 0;
-        function aggPointMap(leaves) {
-            // Sum the flight data and mean coordinates
-            var airPortCode = d3.max(leaves, function(d) {
-                return d['Origin'];
-            });
-
-            var airPortName = d3.max(leaves, function(d) {
-                return d['AirportNameOrigin'];
-            });
-
-            var totalFlights = d3.sum(leaves, function(d) {
-              return d["FlightCount"];
-            });
-
-            var arrDel = d3.sum(leaves, function(d) {
-              return d["ArrDelay"];
-            });
-
-            var depDel = d3.sum(leaves, function(d) {
-              return d["DepDelay"];
-            });
-
-            var coords1 = leaves.map(function(d) {
-              return projection([+d.LongOrigin, +d.LatOrigin]);
-            });
-
-            maxDep = d3.max(leaves, function(d) {
-              return d['DepDelay']/d['FlightCount'];
-            });
-
-            maxArr = d3.max(leaves, function(d) {
-              return d['ArrDelay']/d['FlightCount'];
-            });
-
-            return {
-              'Code' : airPortCode,
-              'Name' : airPortName,
-              'DepDelay' : +depDel / +totalFlights,
-              'ArrDelay' : +arrDel / +totalFlights
-            };
-        }
-        var nested = d3.nest()
-                 .key(function(d) {
-                    return d['AirportNameOrigin'];
-                 })
-                 .rollup(aggPointMap)
-                 .entries(data);
-
-        // Create a scatter plot to illustrate the relationship between departure and arrival delays
-        var margin = 40;
-        var lineX = 0;
-        var lineY = 350;
-        var pltW = 350;
-        var pltH = 300;
-
-        // Labels
-        svg.append('text')
-              .text('Departing vs. Arriving Delay')
-              .attr('x', lineX + 120)
-              .attr('y', lineY -20)
-              .style("font-size","14px")
-              .style("font-family", "sans-serif")
-              .style("fill", "black")
-              .attr('opacity', '0.65')
-              .attr("text-anchor", "center");
-
-        svg.append('text')
-              .text('Avg. Departing Delay')
-              .attr('x', lineX + 160)
-              .attr('y', height - 80)
-              .style("font-size","12px")
-              .style("font-family", "sans-serif")
-              .style("fill", "black")
-              .attr('opacity', '1')
-              .attr("text-anchor", "center");
-
-        svg.append('text')
-              .text('Avg. Arrival Delay')
-              .attr('x', 450)
-              .attr('y', -5)
-              .style("font-size","12px")
-              .style("font-family", "sans-serif")
-              .style("fill", "black")
-              .attr('opacity', '1')
-              .attr("text-anchor", "center")
-              .attr("transform", function(d) {
-                  return "rotate(90)" 
-              });
-
-
-        // Axis scales
-        var depScale = d3.scale.linear().range([0, pltW]).domain([5, 20]);
-        var arrScale = d3.scale.linear().range([pltH, 0]).domain([2, 20]);
-        
-        // Create and add teh axis
-        var dep_axis = d3.svg.axis()
-            .scale(depScale);
-        var arr_axis = d3.svg.axis()
-            .scale(arrScale)
-            .orient('left');
-        d3.select("svg")
-            .append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(" + margin + ", 615)")
-            .call(dep_axis);
-        d3.select("svg")
-            .append("g")
-            .attr("class", "y axis")
-            .attr("transform", "translate(" + margin + ", 320)")
-            .call(arr_axis);
-
-        svg.append('g') // Append each airport as a bubble
-                .attr("class", "bubble")
-                .selectAll("circle")
-                .data(nested)
-                .enter()
-                .append("circle")
-                .text(function(d) { return d.key;})
-                .attr('cx', function(d) { return depScale(d.values['DepDelay']); })
-                .attr('cy', function(d) { return arrScale(d.values['ArrDelay']); })
-                .attr('opacity','0.6')
-                .attr('fill', 'blue')
-                .attr("transform", "translate(" + margin + ",320)")
-                .attr('r', 3)
-                .text('test')
-                .on("mouseover", function(d) {
-                    // Add the mouseover pop up to show flight data
-                    div.transition()        
-                        .duration(200)      
-                        .style("opacity", .95);      
-                    div.html("<b>" + d.key + "</b>" + 
-                      "<br/>Average of " + d.values['DepDelay'].toFixed(0) + " minutes late leaving and " + 
-                      + d.values['ArrDelay'].toFixed(0) + " minutes late arriving at other airports from here. Click for details." )
-                    .style("left", (d3.event.pageX + 20) + "px")     
-                    .style("top", (d3.event.pageY - 10) + "px");
-                var sel = d3.select(this);
-                // Bring the active path to the front for visibility
-                sel.moveToFront();
-                })
-                .on("mouseout", function(d) {
-                    div.style("opacity", 0);
-                })
-                .on("click", function(d) { // Adding the onclick for the route lines
-                  debugger;
-                    d3.selectAll(".route").transition().style("visibility","hidden");
-                    var relevant = svg.selectAll(".src-" + d.values.Code);
-                    relevant.transition()
-                      .style("visibility","visible");
-                    testMe(d.values.Code);
-                });               
-        }
-      addScatter(data);
 	};
   </script>
   <script type="text/javascript">
@@ -713,24 +681,23 @@
 	    .style("opacity", 0);
 
   	format = d3.time.format("%m/%d/%Y");
-
+  var sumStats = {};
 	d3.csv("data/flightData.csv", function(d) {
 		d['FlightCount'] = +d['FlightCount'];
-		d['DelFlights'] = +d['DelFlights'];
 		d['DepDelay'] = +d['DepDelay'];
 		d['LatOrigin'] = +d['LatOrigin'];
 		d['LongOrigin'] = +d['LongOrigin'];
-      	return d;
+    d['destRating'] = +d['destRating'];
+    d['origRating'] = +d['origRating'];
+    return d;
 	}, draw);
   </script>
   <h1>What's Making Your Flight Late?</h1>
  <p> 
-  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) The purpose of the visualization is to show how visual encodings can make understanding complex and copious datasets quick and easy, giving the reader a quick understanding of flight delay performance for the year in the busiest airports. Click on an airport for detailed information and route data between that airport and the others.
-</p>
-<p>
-  The inetersting story here is that it appears that your arrival delay will depend almost entirely on the airports you fly through with very little attributed to your flight. Primarily we can see a relationship between the departure delay and your subsequent arrival delay shown in the scatterplot below. Even more interesting, even when leaving an airport with a very good on time departure rate, flying into a slow one will slow your arrival (check out Salt Lake City with an average departure delay time of under 10 minutes but with poor arrival delays to both San Francisco and Chicago which have poorer on time departure rates.)
-</p>
+  This information was compiled by RITA and represents all the air traffic between the 20 bussiest US airports in terms of departures in 2008 (the last year data was available for.) I grouped airports by their mean departure delay in minutes into three classes of performance (1 being the best through 3 being the worst.) By clicking on an airport you can explore the mean delay time for flights leaving that airport going to the others.
   <br />
+  <br />
+  The interesting story is looking at the impact of what airport you are flying to. Flying from Class 1 to other Class 1 airports tends to have really good arrival delay times with only a few routes averaging over 10 minutes. Flying into Class 2 airports introduces worse performance and Class 3 (the poorest performers) is even worse. You can visualise the route perfomrmance between airports of different ratings by clicking on the buttons on the left.
   <br />
 </body>
 </html>
